@@ -2,7 +2,7 @@
   <div class="evaluation-view">
     <!-- 顶部用户与餐厅信息 -->
     <div class="eva-header">
-      <div class="eva-greet">你好！{{ userName.value }}</div>
+      <div class="eva-greet">你好！{{ userName }}</div>
       <div class="eva-tip">请你对此次用餐做出评价！</div>
     </div>
     <!-- 预约信息展示区 -->
@@ -55,7 +55,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+// 由于使用了unplugin-auto-import，ref和reactive会自动导入，无需手动导入
 
 const userName = ref('Vittoria Bella')
 const restaurant = ref('Mic Restaurant')

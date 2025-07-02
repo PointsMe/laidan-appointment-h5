@@ -1,7 +1,7 @@
 <template>
   <div class="step-two">
     <div class="choose-time-header">
-      <p>1.</p>
+      <p>2.</p>
       <p>选择人数</p>
     </div>
     <div class="choose-time-content">

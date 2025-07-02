@@ -2,11 +2,11 @@
   <div class="choose-time">
     <router-view />
     <div class="choose-time-footer">
-      <div class="choose-time-footer-left">
+      <div class="choose-time-footer-left" @click="handleBack">
         <img src="@/assets/step.png" alt="">
         <span>上一步</span>
       </div>
-      <div class="choose-time-footer-right">
+      <div class="choose-time-footer-right" @click="handleNext">
         <span>下一步</span>
         <img src="@/assets/next.png" alt="">
       </div>
@@ -15,14 +15,22 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 defineOptions({
   name: 'ChooseTimeView'
 })
+const handleNext = () => {
+  router.push('/chooseTime/stepTwo')
+}
+const handleBack = () => {
+  router.back()
+}
 </script>
 <style scoped lang="less">
 .choose-time {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-color: rgb(250, 250, 250);
   p {
     padding: 0;

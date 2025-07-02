@@ -46,7 +46,8 @@ export default defineConfig({
       imports: ['vue', 'vue-router', 'pinia'], //自动引入vue的ref、toRefs、onmounted等，无需在页面中再次引入
       dts: 'src/types/auto-import.d.ts', // 根据引入来源自动生成的类型声明文件路径
       eslintrc: {
-        enabled: false // 使用 eslint 配置
+        enabled: false, // 启用 eslint 配置
+        filepath: './.eslintrc-auto-import.json'
       }
     })
   ],

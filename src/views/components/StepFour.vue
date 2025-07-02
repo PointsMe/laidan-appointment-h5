@@ -56,9 +56,11 @@
   </div>
 </template>
 <script setup lang="ts">
+import { ref } from 'vue'
 defineOptions({
   name: 'StepFour'
 })
+const chooseTimeList = ref<any[]>([])
 </script>
 <style scoped lang="less">
 .step-four {

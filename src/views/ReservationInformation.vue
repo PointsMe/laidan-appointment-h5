@@ -41,6 +41,7 @@
       ref="formRef"
       :model="formModal"
       label-position="top"
+      
       :rules="rules"
       class="reservation-form"
     >

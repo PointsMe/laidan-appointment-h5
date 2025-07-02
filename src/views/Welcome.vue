@@ -3,7 +3,7 @@
     <img src="@/assets/welcome.jpg" alt="">
   </div>
   <div class="welcome-text">
-    <span>立即预订</span>
+    <span @click="handleClick">立即预订</span>
   </div>
 </template>
 <script setup lang="ts">
@@ -12,6 +12,9 @@ const router = useRouter();
 defineOptions({
   name: "WelcomeView"
 })
+const handleClick = () => {
+  router.push('/chooseTime/stepOne')
+}
 </script>
 <style scoped lang="less">
 .welcome{
@@ -40,9 +43,8 @@ defineOptions({
   >span{
     width: auto;
     display: block;
-    font-size: 24px;
+    font-size: 20px;
     padding: 10px 20px;
-    font-weight: bold;
     background: #EC6E38;
     border-radius: 5px 5px 5px 5px;
     color: #fff;

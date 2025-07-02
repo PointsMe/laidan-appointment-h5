@@ -53,5 +53,10 @@ export default [
         path: '/evaluation',
         name: 'Evaluation',
         component: () => import('../views/EvaluationView.vue'),
+    },
+    {
+        path: '/sureEvaluation',
+        name: 'SureEvaluation',
+        component: () => import('../views/SureEvaluationView.vue'),
     }
 ]
