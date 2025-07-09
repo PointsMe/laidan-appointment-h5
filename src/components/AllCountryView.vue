@@ -4,7 +4,7 @@
       :editable="false"
       v-model="value"
       placeholder="+86"
-      style="width: 2.3rem"
+      style="width: 2.1rem"
       @change="changeCountry"
     >
       <el-option v-for="item in options" :key="item.num" :label="item.num" :value="item.num">
@@ -86,7 +86,7 @@ watch(
 </script>
 <style scoped lang="less">
 .all-country {
-  width: 400px;
+  // width: 400px;
   display: flex;
   align-items: center;
   justify-content: left;

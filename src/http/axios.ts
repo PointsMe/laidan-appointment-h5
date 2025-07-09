@@ -1,5 +1,6 @@
 import type { AxiosInstance, AxiosRequestConfig } from "axios"
-import { getLanguage, getMerchantId, getShopId } from "@/utils/cache/cookies"
+import { getLanguage} from "@/utils/cache/cookies"
+import { getMerchantId, getShopId } from "@/utils/cache"
 import axios from "axios"
 import { get, merge } from "lodash-es"
 import { ElMessage } from 'element-plus'
@@ -112,6 +113,7 @@ function createRequest(instance: AxiosInstance) {
         "X-Shop-Id":  shopId,
         "accept-language": language,
         "Content-Type": "application/json",
+        "X-Client-Type": "ios",
         "X-TimeZone": timeZone
       },
       // 请求体

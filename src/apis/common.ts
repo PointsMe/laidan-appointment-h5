@@ -53,17 +53,17 @@ export function updateWaiterApi(data:any) {
     data:data
   })
 }
-/**
- * 
- * @returns 创建预约
- */
-export function createReservationApi(data:any) {
-  return request<Types.CurrentUserResponseData>({
-    url: "/reservation/createNoToken",
-    method: "post",
-    data:data
-  })
-}
+// /**
+//  * 
+//  * @returns 创建预约
+//  */
+// export function createReservationApi(data:any) {
+//   return request<Types.CurrentUserResponseData>({
+//     url: "/reservation/createNoToken",
+//     method: "post",
+//     data:data
+//   })
+// }
 /** 获取图形验证码 */
 export function getCaptchaApi(data: any) {
   return request<Types.CurrentUserResponseData>({
@@ -80,7 +80,57 @@ export function checkCaptchaApi(data: any) {
     data: data
   })
 }
-/** 获取验证码 */
+/**
+ * 
+ * @returns 创建预约
+ */
+
+export function getCodeDetailApi(data:any) {
+  return request<any>({
+    url: "/shop/code/find",
+    method: "post",
+    data:data
+  })
+}
+/**
+ * 从这开始忘下面的是新增的
+ * @returns 创建预约
+ */
+export function createReservationApi(data:any) {
+  return request<Types.CurrentUserResponseData>({
+    url: "/reservation/create",
+    method: "post",
+    data:data
+  })
+}
+/** 获取预约详情 */
+export function getReservationDetailApi(data:any) {
+  return request<Types.CurrentUserResponseData>({
+    url: "/reservation/detail",
+    method: "post",
+    data:data
+  })
+}
+/** 修改预约 */
+export function updateReservationApi(data:any) {
+  return request<Types.CurrentUserResponseData>({
+    url: "/reservation/update",
+    method: "post",
+    data:data
+  })
+}
+/**
+ * 
+ * @returns 获取预约时间
+ */
+export function getReservationTimeListApi(data:any) {
+  return request<any>({
+    url: "/setting/reservation/time/list",
+    method: "post",
+    data:data
+  })
+}
+/** 获取短信验证码 */
 export function getVerificationCodeApi(data: Types.verificationCodeType) {
   return request<ApiResponseData<string | null>>({
     url: "/verification_code/send",
@@ -88,20 +138,19 @@ export function getVerificationCodeApi(data: Types.verificationCodeType) {
     data: data
   })
 }
-/**
- * 
- * @returns 创建预约
- */
-export function getSettingDetailApi() {
-  return request<any>({
-    url: "/reservation/setting/detailNoToken",
+/** 验证短信验证码 */
+export function checkCodeApi(data: any) {
+  return request<Types.CurrentUserResponseData>({
+    url: "/verification_code/check",
     method: "post",
+    data: data
   })
 }
-export function getCodeDetailApi(data:any) {
-  return request<any>({
-    url: "/shop/code/find",
+/** 取消预约 */
+export function cancelReservationApi(data: any) {
+  return request<Types.CurrentUserResponseData>({
+    url: "/reservation/cancel",
     method: "post",
-    data:data
+    data: data
   })
 }

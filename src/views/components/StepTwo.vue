@@ -8,22 +8,41 @@
       <div class="choose-time-content-item">
         <img src="@/assets/parents.png" alt="" />
         <span>大人</span>
-        <van-field class="choose-time-content-item" v-model="value" placeholder="请输入人数" />
+        <van-field type="number" :min="1" @change="handleChangeParent" class="choose-time-content-item" v-model="adultCount" placeholder="请输入人数" />
       </div>
       <div class="choose-time-content-item">
         <img src="@/assets/children.png" alt="" />
         <span>儿童</span>
-        <van-field class="choose-time-content-item" v-model="value2" placeholder="请输入人数" />
+        <van-field type="number" :min="0" @change="handleChangeChild" class="choose-time-content-item" v-model="childCount" placeholder="请输入人数" />
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
-const value = ref(0)
-const value2 = ref(0)
+import { useRouteStore } from '@/stores/modules/routeStore'
+const routeStore = useRouteStore()
+const adultCount = ref(routeStore.requestParams.adultCount || 0)
+const childCount = ref(routeStore.requestParams.childCount || 0)
 defineOptions({
   name: 'StepTwo'
+})
+const handleChangeParent = (value: any)=>{
+  routeStore.setRequestParamsFn({
+    ...routeStore.requestParams,
+    adultCount: value.target.value
+  })
+}
+const handleChangeChild = (value: any)=>{
+  console.log(value)
+  routeStore.setRequestParamsFn({
+    ...routeStore.requestParams,
+    childCount: value.target.value
+  })
+}
+onMounted(()=>{
+  adultCount.value = routeStore.requestParams.adultCount || 0
+  childCount.value = routeStore.requestParams.childCount || 0
 })
 </script>
 <style scoped lang="less">

@@ -7,18 +7,35 @@
     <div class="choose-time-content">
       <div class="choose-time-content-item">
         <img class="img-1" src="@/assets/day.png" alt="" />
-        <span>午餐</span>
+        <span @click="handleClick('lunch')" :class="lunchActive === 101 ? 'span-active' : ''">午餐</span>
       </div>
       <div class="choose-time-content-item">
         <img class="img-2" src="@/assets/night.png" alt="" />
-        <span>晚餐</span>
+        <span @click="handleClick('dinner')" :class="lunchActive === 102 ? 'span-active' : ''">晚餐</span>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { useRouteStore } from '@/stores/modules/routeStore'
 defineOptions({
   name: 'StepThree'
+})
+const routeStore = useRouteStore()
+const lunchActive = ref(routeStore.requestParams.lunchActive || '')
+const handleClick = (value: any)=>{
+  if(value === 'lunch'){
+    lunchActive.value = 101
+  }else{
+    lunchActive.value = 102
+  }
+  routeStore.setRequestParamsFn({
+    ...routeStore.requestParams,
+    lunchActive: lunchActive.value
+  })
+}
+onMounted(()=>{
+  lunchActive.value = routeStore.requestParams.lunchActive || ''
 })
 </script>
 <style scoped lang="less">
@@ -63,6 +80,10 @@ defineOptions({
         box-shadow: 0px 3px 6px 1px rgba(0, 0, 0, 0.16);
         border-radius: 5px 5px 5px 5px;
         border: 1px solid #e8e8e8;
+      }
+      .span-active {
+        background: #EC6E38 !important;
+        color: #ffffff !important;
       }
     }
   }

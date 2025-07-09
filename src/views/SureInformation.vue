@@ -10,22 +10,22 @@
     <div class="info-section">
       <div class="info-row">
         <img src="@/assets/date.png" class="info-icon" />
-        <span class="info-label">周四</span>
-        <span class="info-value">02 | 01 | 2025</span>
+        <span class="info-label">{{pageParams.weekDay}} </span>
+        <span class="info-value">{{pageParams.date}}</span>
       </div>
       <div class="info-row">
         <img src="@/assets/clock.png" class="info-icon" />
-        <span class="info-label">晚餐</span>
+        <span class="info-label">{{pageParams.lunchActive === 101 ? '午餐' : '晚餐'}}</span>
         <span class="info-value">19:30 - 22:00</span>
       </div>
       <div class="info-row people-row">
         <div class="people-block">
           <img src="@/assets/parents.png" class="people-icon" />
-          <div>2 大人</div>
+          <div>{{pageParams.adultCount}} 大人</div>
         </div>
         <div class="people-block">
           <img src="@/assets/children.png" class="people-icon" />
-          <div>2 儿童</div>
+          <div>{{pageParams.childCount}} 儿童</div>
         </div>
       </div>
     </div>
@@ -34,8 +34,8 @@
       <van-button type="primary" class="submit-btn">打开地图</van-button>
       <van-button type="primary" class="submit-btn">添加到我的日历</van-button>
       <van-button type="primary" class="submit-btn">将餐馆添加到我的联系人</van-button>
-      <van-button type="primary" class="submit-btn another-color">编辑预约</van-button>
-      <van-button type="primary" class="submit-btn another-color">取消预约</van-button>
+      <van-button type="primary" class="submit-btn another-color" @click="editReservation">编辑预约</van-button>
+      <van-button type="primary" class="submit-btn another-color" @click="cancelReservation">取消预约</van-button>
     </div>
     <!-- 商家提示 -->
     <div class="merchant-tip">
@@ -47,9 +47,44 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+import { useRouteStore } from '@/stores/modules/routeStore'
+import { cancelReservationApi } from '@/apis/common'
+import { ElMessage } from 'element-plus'
+const routeStore = useRouteStore()
+const router = useRouter()
 defineOptions({
   name: 'SureInformationView'
 })
+const pageParams = computed(()=>{
+  return {
+    ...routeStore.requestParams,
+    date: routeStore.requestParams.date
+      ? new Date(routeStore.requestParams.date).toLocaleDateString()
+      : new Date().toLocaleDateString(),
+    // 根据日期获取周几
+    weekDay: routeStore.requestParams.date
+      ? ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date(routeStore.requestParams.date).getDay()]
+      : ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date().getDay()]
+  }
+})
+const editReservation = () => {
+  router.push('/reservationInformation')
+}
+const cancelReservation = () => {
+  cancelReservationApi({
+    id: routeStore.requestParams.id
+  }).then(res => {
+    if(res && res.code === 20000){
+      ElMessage.success('取消预约成功')
+      routeStore.resetRequestParamsFn()
+      routeStore.resetCurrentStepFn()
+      router.push('/')
+    }else{
+      ElMessage.error('取消预约失败')
+    }
+  })
+}
 </script>
 
 <style scoped lang="less">

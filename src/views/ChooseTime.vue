@@ -4,10 +4,10 @@
     <div class="choose-time-footer">
       <div class="choose-time-footer-left" @click="handleBack">
         <img src="@/assets/step.png" alt="">
-        <span>上一步</span>
+        <span>返回</span>
       </div>
       <div class="choose-time-footer-right" @click="handleNext">
-        <span>下一步</span>
+        <span>确认</span>
         <img src="@/assets/next.png" alt="">
       </div>
     </div>
@@ -16,15 +16,32 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRouteStore } from '@/stores/modules/routeStore'
 const router = useRouter()
+const routeStore = useRouteStore()
 defineOptions({
   name: 'ChooseTimeView'
 })
 const handleNext = () => {
-  router.push('/chooseTime/stepTwo')
+  const index = routeStore.stepList.indexOf(routeStore.currentStep)
+  if(index < routeStore.stepList.length - 1){
+    routeStore.setCurrentStepFn(routeStore.stepList[index + 1])
+    router.push(`/chooseTime/${routeStore.stepList[index + 1]}`)
+  }else{
+    routeStore.setCurrentStepFn(routeStore.stepList[0])
+    router.push('/reservationInformation')
+  }
 }
 const handleBack = () => {
-  router.back()
+  const index = routeStore.stepList.indexOf(routeStore.currentStep)
+  if(index > 0){
+    routeStore.setCurrentStepFn(routeStore.stepList[index - 1])
+    router.push(`/chooseTime/${routeStore.stepList[index - 1]}`)
+  }else{
+    routeStore.resetRequestParamsFn()
+    routeStore.resetCurrentStepFn()
+    router.push('/')
+  }
 }
 </script>
 <style scoped lang="less">

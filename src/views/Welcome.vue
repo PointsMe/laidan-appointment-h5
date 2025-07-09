@@ -8,13 +8,23 @@
 </template>
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { useRouteStore } from '@/stores/modules/routeStore'
 const router = useRouter();
+const routeStore = useRouteStore()
 defineOptions({
   name: "WelcomeView"
 })
 const handleClick = () => {
   router.push('/chooseTime/stepOne')
 }
+onMounted(()=>{
+  const shopId = router.currentRoute.value?.query?.shopId as string
+  const merchantId = router.currentRoute.value?.query?.merchantId as string
+  if(shopId && merchantId){
+    routeStore.setShopIdFn(shopId)
+    routeStore.setMerchantIdFn(merchantId)
+  }
+})
 </script>
 <style scoped lang="less">
 .welcome{

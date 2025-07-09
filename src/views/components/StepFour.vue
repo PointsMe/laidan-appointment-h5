@@ -5,50 +5,22 @@
       <p>选择用餐区域与时间</p>
     </div>
     <div class="choose-time-content">
-      <div class="choose-time-content-item">
+      <div class="choose-time-content-item" v-for="item in chooseTimeList" :key="item.tableZone.id">
         <div class="choose-time-content-item-content">
-          <span>室外花园</span>
+          <span>{{ item.tableZone.name }}</span>
           <img src="@/assets/time-bg.jpg" alt="" />
-          <span>商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述。</span>
+          <span
+            >商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述。</span
+          >
         </div>
         <div class="choose-time-content-item-time">
-          <span>19:00</span>
-          <span>21:00</span>
-          <span>23:00</span>  
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-        </div>
-      </div>
-      <div class="choose-time-content-item">
-        <div class="choose-time-content-item-content">
-          <span>室外大堂</span>
-          <img src="@/assets/time-bg.jpg" alt="" />
-          <span>商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述，商家对用餐区域的描述描述。</span>
-        </div>
-        <div class="choose-time-content-item-time">
-          <span>19:00</span>
-          <span>21:00</span>
-          <span>23:00</span>  
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
-          <span>21:00</span>
+          <span
+            v-for="(iv, ivIndex) in item.reservationZoneTimes"
+            :key="ivIndex"
+            @click="handleClick(item.tableZone.id, iv)"
+            :class="iv.reservationed ? iv.choosed ? 'choosed-time' : '' : 'disabled-time'"
+            >{{ iv.reservationTime }}</span
+          >
         </div>
       </div>
     </div>
@@ -57,16 +29,69 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
+import { getReservationTimeListApi } from '@/apis/common'
+import { useRouteStore } from '@/stores/modules/routeStore'
+const routeStore = useRouteStore()
 defineOptions({
   name: 'StepFour'
 })
 const chooseTimeList = ref<any[]>([])
+const getReservationTimeList = async () => {
+  const res = await getReservationTimeListApi({
+    diningPeriod: routeStore.requestParams.lunchActive
+  })
+  const arr  = (res.data || []).map((iv:any)=>{
+    iv.reservationZoneTimes = iv.reservationZoneTimes.map((ivv:any)=>{
+      if(iv.tableZone.id === routeStore.requestParams.reservationZoneId && ivv.reservationTime === routeStore.requestParams.reservationTime){
+        ivv.choosed = true
+      }else{
+        ivv.choosed = false
+      }
+      return ivv
+    })
+    return iv
+  })
+  chooseTimeList.value = arr
+}
+const handleClick = (id: string, item: any) => {
+  console.log(id, item)
+  if(!item.reservationed){
+    return false
+  }
+  routeStore.setRequestParamsFn({
+    ...routeStore.requestParams,
+    reservationTime: item.reservationTime,
+    reservationZoneId: id
+  })
+  chooseTimeList.value = chooseTimeList.value.map((iv: any) => {
+    if (iv.tableZone.id === id) {
+      iv.reservationZoneTimes = iv.reservationZoneTimes.map((ivv: any) => {
+        if (ivv.reservationTime === item.reservationTime) {
+          ivv.choosed = true
+        } else {
+          ivv.choosed = false
+        }
+        return ivv
+      })
+    }else{
+      iv.reservationZoneTimes = iv.reservationZoneTimes.map((ivv: any) => {
+        ivv.choosed = false
+        return ivv
+      })
+    }
+    return iv
+  })
+}
+onMounted(() => {
+  getReservationTimeList()
+})
+
 </script>
 <style scoped lang="less">
 .step-four {
   width: 100%;
   height: 100%;
-  .null-div{
+  .null-div {
     margin-top: 20px;
     width: 100%;
     height: 140px;
@@ -100,7 +125,7 @@ const chooseTimeList = ref<any[]>([])
           font-size: 19px;
           color: #000000;
         }
-        >span:first-child{
+        > span:first-child {
           margin-bottom: 10px;
           margin-top: 10px;
         }
@@ -119,10 +144,21 @@ const chooseTimeList = ref<any[]>([])
           font-weight: 500;
           font-size: 19px;
           color: #000000;
-          background: #FFFFFF;
+          background: #ffffff;
           border-radius: 5px 5px 5px 5px;
           border: 1px solid #707070;
           margin-right: 11px;
+        }
+        .choosed-time {
+          background: #ec6e38 !important;
+          color: #ffffff !important;
+          border: none !important;
+        }
+        .disabled-time {
+          background: #707070 !important;
+          color: #ffffff !important;
+          border: none !important;
+          cursor: not-allowed;
         }
       }
     }

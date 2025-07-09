@@ -15,6 +15,7 @@ declare module 'vue' {
     VanField: typeof import('vant/es')['Field']
     VanIcon: typeof import('vant/es')['Icon']
     VanInput: typeof import('vant/es')['Input']
+    VanPopup: typeof import('vant/es')['Popup']
     VanUploader: typeof import('vant/es')['Uploader']
     VerifyPoints: typeof import('./src/components/Verify/VerifyPoints.vue')['default']
     VerifySlide: typeof import('./src/components/Verify/VerifySlide.vue')['default']

@@ -12,6 +12,7 @@ import router from './router'
 // 引入国际化
 import { i18n } from './lang/index'
 import { configureCompat } from '@vue/compat';
+import { Toast } from 'vant';
 configureCompat({ MODE: 'Vue2' });
 const app = createApp(App);
 /* globalProperties一个用于注册能够被应用内所有组件实例访问到的全局属性的对象。 */
@@ -22,4 +23,5 @@ app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)
 app.use(Vant)
+app.use(Toast)
 app.mount('#app')
