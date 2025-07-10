@@ -7,9 +7,7 @@
           <div class="eva-label">整体体验</div>
           <div class="eva-icons">
             <img
-              :class="{ selected: answers.exp === 1 }"
-              src="@/assets/hight.png"
-              @click="select('exp', 1)"
+              :src="answers.exp"
               alt="好"
             />
           </div>
@@ -18,9 +16,7 @@
           <div class="eva-label">菜品质量</div>
           <div class="eva-icons">
             <img
-              :class="{ selected: answers.food === 2 }"
-              src="@/assets/midle.png"
-              @click="select('food', 2)"
+              :src="answers.food"
               alt="一般"
             />
           </div>
@@ -29,9 +25,7 @@
           <div class="eva-label">服务质量</div>
           <div class="eva-icons">
             <img
-              :class="{ selected: answers.service === 1 }"
-              src="@/assets/hight.png"
-              @click="select('service', 1)"
+              :src="answers.service"
               alt="好"
             />
           </div>
@@ -42,9 +36,7 @@
           <div class="eva-label">环境卫生</div>
           <div class="eva-icons">
             <img
-              :class="{ selected: answers.env === 3 }"
-              src="@/assets/low.png"
-              @click="select('env', 3)"
+              :src="answers.env"
               alt="差"
             />
           </div>
@@ -53,9 +45,7 @@
           <div class="eva-label">是否愿意推荐给朋友</div>
           <div class="eva-icons">
             <img
-              :class="{ selected: answers.recommend === 1 }"
-              src="@/assets/hight.png"
-              @click="select('recommend', 1)"
+              :src="answers.recommend"
               alt="好"
             />
           </div>
@@ -68,14 +58,12 @@
       <div class="eva-share-bottom">
         <van-icon name="photo-o" size="20" class="eva-file-icon" />
         <van-uploader>
-          <van-button type="primary" size="small" class="eva-file-label"
-            >选择文件</van-button
-          >
+          <van-button type="primary" size="small" class="eva-file-label">选择文件</van-button>
         </van-uploader>
       </div>
     </div>
     <div class="eva-btns">
-      <van-button type="primary" @click="onCancel" class="eva-cancel">取消</van-button>
+      <!-- <van-button type="primary" @click="onCancel" class="eva-cancel">取消</van-button> -->
       <van-button type="primary" @click="onSubmit" class="eva-submit">发送</van-button>
     </div>
     <div class="eva-footer">
@@ -85,20 +73,21 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-
+import { useRouter } from 'vue-router'
+import HighSvg from '@/assets/hight.png'
+import MidleSvg from '@/assets/midle.png'
+import LowSvg from '@/assets/low.png'
+const router = useRouter()
 const answers = reactive({
-  exp: 1,
-  food: 2,
-  service: 1,
-  env: 3,
-  recommend: 1
+  exp: HighSvg,
+  food: HighSvg,
+  service: HighSvg,
+  env: HighSvg,
+  recommend: HighSvg
 })
 const shareText = ref('')
 const file = ref<File | null>(null)
 
-function select(key: keyof typeof answers, value: number) {
-  answers[key] = value
-}
 function onFileChange(e: Event) {
   const target = e.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
@@ -113,6 +102,26 @@ function onSubmit() {
   // 这里可添加表单校验和提交逻辑
   alert('感谢您的评价！')
 }
+onMounted(() => {
+  // 接收路由参数，并打印到控制台，便于调试和后续使用
+  const routeParams = router.currentRoute.value?.query || {}
+  console.log('接收到的路由参数:', routeParams)
+  const id = router.currentRoute.value?.query?.id as string
+  if (id) {
+    const arr = [HighSvg, MidleSvg, LowSvg];
+    const serviceQuality = router.currentRoute.value?.query?.serviceQuality as number
+    const overallExperience = router.currentRoute.value?.query?.overallExperience as number
+    const dishQuality = router.currentRoute.value?.query?.dishQuality as number
+    const environmentalSanitation = router.currentRoute.value?.query
+      ?.environmentalSanitation as number
+    const isWillRecommendFriend = router.currentRoute.value?.query?.isWillRecommendFriend as number
+    answers.exp = arr[overallExperience - 1]
+    answers.food = arr[dishQuality - 1]
+    answers.service = arr[serviceQuality - 1]
+    answers.env = arr[environmentalSanitation - 1]
+    answers.recommend = arr[isWillRecommendFriend - 1]
+  }
+})
 </script>
 <style scoped lang="less">
 .sure-evaluation {
@@ -245,7 +254,7 @@ function onSubmit() {
   }
   .eva-submit {
     float: right;
-    width: 35%;
+    width: 100%;
     height: 40px;
     background: #ec6e38;
     color: #fff;

@@ -2,19 +2,23 @@
   <div class="evaluation-view">
     <!-- 顶部用户与餐厅信息 -->
     <div class="eva-header">
-      <div class="eva-greet">你好！{{ userName }}</div>
+      <div class="eva-greet">你好！{{ reservationDetail?.username }}</div>
       <div class="eva-tip">请你对此次用餐做出评价！</div>
     </div>
     <!-- 预约信息展示区 -->
     <div class="info-section">
-        <div class="info-section-title">Mic Restaurant</div>
-      <div class="info-row">
-        <span class="info-label">周四</span>
-        <span class="info-value">02 | 01 | 2025</span>
+      <div class="info-section-title">
+        {{ reservationDetail?.specialNeeds?.merchantName || '餐厅名称' }}
       </div>
       <div class="info-row">
-        <span class="info-label">晚餐</span>
-        <span class="info-value">19:30 - 22:00</span>
+        <span class="info-label">{{ reservationDetail?.weekDay }}</span>
+        <span class="info-value">{{ reservationDetail?.date }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          {{ reservationDetail?.diningPeriod === 101 ? '午餐' : '晚餐' }}
+        </span>
+        <span class="info-value">{{ reservationDetail?.time }}</span>
       </div>
     </div>
     <!-- 评分表单 -->
@@ -56,11 +60,11 @@
 </template>
 <script setup lang="ts">
 // 由于使用了unplugin-auto-import，ref和reactive会自动导入，无需手动导入
-
-const userName = ref('Vittoria Bella')
-const restaurant = ref('Mic Restaurant')
-const date = ref('02 | 01 | 2025')
-const time = ref('19:30 – 22:00')
+import { getReservationDetailApi, addReservationCommentApi } from '@/apis/common'
+import { useRouter } from 'vue-router'
+import { showToast } from 'vant'
+const router = useRouter()
+const reservationDetail = ref(null)
 
 const questions = [
   { key: 'exp', label: '整体体验' },
@@ -83,11 +87,82 @@ function selectAnswer(key: string, value: number) {
   answers[key] = value
 }
 
-function handleSubmit() {
+async function handleSubmit() {
   // 校验（如需必填可加校验）
   // 提交逻辑
-  alert('感谢您的评价！')
+  console.log('answers==>', answers)
+  console.log('suggestion==>', suggestion.value)
+  showToast('评价成功')
+  
+  router.push({
+    name: 'SureEvaluation',
+    query: {
+      id: reservationDetail.value.id,
+      serviceQuality: answers.service,
+      overallExperience: answers.exp,
+      dishQuality: answers.food,
+      environmentalSanitation: answers.env,
+      isWillRecommendFriend: answers.recommend
+    }
+  })
+  return false
+  const res = await addReservationCommentApi({
+    reservationId: reservationDetail.value.id,
+    customerId: reservationDetail.value.customerId,
+    serviceQuality: answers.service,
+    overallExperience: answers.exp,
+    dishQuality: answers.food,
+    environmentalSanitation: answers.env,
+    isWillRecommendFriend: answers.recommend,
+    opinion: suggestion.value
+  })
+  if (res && res.code === 20000) {
+    showToast('评价成功')
+    router.push({
+      name: 'SureEvaluation',
+      query: {
+        id: reservationDetail.value.id,
+        serviceQuality: answers.service,
+        overallExperience: answers.exp,
+        dishQuality: answers.food,
+        environmentalSanitation: answers.env,
+        isWillRecommendFriend: answers.recommend
+      }
+    })
+  } else {
+    showToast('评价失败')
+  }
 }
+async function getReservationDetailFn(id) {
+  const res = await getReservationDetailApi({
+    id: id
+  })
+  if (res && res.code === 20000) {
+    const obj = {
+      ...res.data,
+      date: res.data.startedAt
+        ? new Date(res.data.startedAt).toLocaleDateString()
+        : new Date().toLocaleDateString(),
+      time: res.data.startedAt
+        ? new Date(res.data.startedAt).toLocaleTimeString()
+        : new Date().toLocaleTimeString(),
+      // 根据日期获取周几
+      weekDay: res.data.startedAt
+        ? ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][
+            new Date(res.data.startedAt).getDay()
+          ]
+        : ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date().getDay()]
+    }
+    reservationDetail.value = obj
+  }
+}
+onMounted(() => {
+  console.log('EvaluationView')
+  const id = router.currentRoute.value?.query?.id as string
+  if (id) {
+    getReservationDetailFn(id)
+  }
+})
 </script>
 <style scoped lang="less">
 .evaluation-view {
@@ -104,10 +179,10 @@ function handleSubmit() {
   border-radius: 5px;
   margin-bottom: 16px;
   padding: 24px 16px 8px 0px;
-  .info-section-title{
+  .info-section-title {
     font-size: 20px;
-color: #000000;
-text-align: left;
+    color: #000000;
+    text-align: left;
   }
   .info-row {
     display: flex;

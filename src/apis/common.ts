@@ -154,3 +154,11 @@ export function cancelReservationApi(data: any) {
     data: data
   })
 }
+/** 添加预约评论  */
+export function addReservationCommentApi(data: any) {
+  return request<Types.CurrentUserResponseData>({
+    url: "/reservationCaterRating/create",
+    method: "post",
+    data: data
+  })
+}
