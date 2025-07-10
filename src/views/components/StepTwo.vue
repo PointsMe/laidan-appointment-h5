@@ -40,10 +40,6 @@ const handleChangeChild = (value: any)=>{
     childCount: value.target.value
   })
 }
-onMounted(()=>{
-  adultCount.value = routeStore.requestParams.adultCount || 0
-  childCount.value = routeStore.requestParams.childCount || 0
-})
 </script>
 <style scoped lang="less">
 .step-two {

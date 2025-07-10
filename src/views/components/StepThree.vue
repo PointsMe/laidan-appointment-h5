@@ -34,9 +34,6 @@ const handleClick = (value: any)=>{
     lunchActive: lunchActive.value
   })
 }
-onMounted(()=>{
-  lunchActive.value = routeStore.requestParams.lunchActive || ''
-})
 </script>
 <style scoped lang="less">
 .step-three {

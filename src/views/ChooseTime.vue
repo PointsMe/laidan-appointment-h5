@@ -17,12 +17,29 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRouteStore } from '@/stores/modules/routeStore'
+import { showToast } from 'vant'
 const router = useRouter()
 const routeStore = useRouteStore()
 defineOptions({
   name: 'ChooseTimeView'
 })
 const handleNext = () => {
+  if (routeStore.currentStep === 'StepTwo') {
+    if (routeStore.requestParams.adultCount === 0) {
+      showToast('请输入人数')
+      return false
+    }
+  }else if (routeStore.currentStep === 'StepThree') {
+    if (routeStore.requestParams.lunchActive === '') {
+      showToast('请选择就餐时段')
+      return false
+    }
+  }else if (routeStore.currentStep === 'StepFour') {
+    if (routeStore.requestParams.reservationTime === '') {
+      showToast('请选择就餐时间')
+      return false
+    }
+  }
   const index = routeStore.stepList.indexOf(routeStore.currentStep)
   if(index < routeStore.stepList.length - 1){
     routeStore.setCurrentStepFn(routeStore.stepList[index + 1])

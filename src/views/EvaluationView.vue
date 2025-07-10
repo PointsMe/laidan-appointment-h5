@@ -92,20 +92,18 @@ async function handleSubmit() {
   // 提交逻辑
   console.log('answers==>', answers)
   console.log('suggestion==>', suggestion.value)
-  showToast('评价成功')
-  
-  router.push({
-    name: 'SureEvaluation',
-    query: {
-      id: reservationDetail.value.id,
-      serviceQuality: answers.service,
-      overallExperience: answers.exp,
-      dishQuality: answers.food,
-      environmentalSanitation: answers.env,
-      isWillRecommendFriend: answers.recommend
-    }
-  })
-  return false
+  // router.push({
+  //   name: 'SureEvaluation',
+  //   query: {
+  //     id: reservationDetail.value.id,
+  //     serviceQuality: answers.service,
+  //     overallExperience: answers.exp,
+  //     dishQuality: answers.food,
+  //     environmentalSanitation: answers.env,
+  //     isWillRecommendFriend: answers.recommend
+  //   }
+  // })
+  // return false
   const res = await addReservationCommentApi({
     reservationId: reservationDetail.value.id,
     customerId: reservationDetail.value.customerId,
@@ -118,17 +116,19 @@ async function handleSubmit() {
   })
   if (res && res.code === 20000) {
     showToast('评价成功')
-    router.push({
-      name: 'SureEvaluation',
-      query: {
-        id: reservationDetail.value.id,
-        serviceQuality: answers.service,
-        overallExperience: answers.exp,
-        dishQuality: answers.food,
-        environmentalSanitation: answers.env,
-        isWillRecommendFriend: answers.recommend
-      }
-    })
+    setTimeout(() => {
+      router.push({
+        name: 'SureEvaluation',
+        query: {
+          id: reservationDetail.value.id,
+          serviceQuality: answers.service,
+          overallExperience: answers.exp,
+          dishQuality: answers.food,
+          environmentalSanitation: answers.env,
+          isWillRecommendFriend: answers.recommend
+        }
+      })
+    }, 1000)
   } else {
     showToast('评价失败')
   }
